@@ -39,17 +39,6 @@ public class SearchSpecification implements Specification<ProductEntity> {
         }
 
 
-        //if searching with model, no need make
-        if (filter.getModelId() != null) {
-            predicates.add(
-                    cb.or(
-                        cb.equal(root.<Long>get("model").get("id"), filter.getModelId()),
-                        cb.equal(root.<Long>get("model").get("parentModel").get("id"), filter.getModelId())
-                    ));
-        } else if (filter.getMakeId() != null) {
-                predicates.add(cb.equal(root.<Long>get("model").get("make").get("id"), filter.getMakeId()));
-        }
-
         if (filter.getMaxPrice() != null) {
             predicates.add(cb.lessThanOrEqualTo(root.<Double>get("detail").get("price"), filter.getMaxPrice()));
         }
@@ -58,58 +47,10 @@ public class SearchSpecification implements Specification<ProductEntity> {
             predicates.add(cb.greaterThanOrEqualTo(root.<Double>get("detail").get("price"), filter.getMinPrice()));
         }
 
-
-        if (filter.getBodyTypeIds() != null) {
-
-            predicates.add(root.<Long>get("body").get("bodyType").get("id").in(filter.getBodyTypeIds()));
-        }
-
-        if (filter.getMinYear() != null){
-            predicates.add(cb.greaterThanOrEqualTo(root.<Integer>get("detail").get("year"), filter.getMinYear()));
-        }
-
-        if (filter.getMaxYear() != null){
-            predicates.add(cb.lessThanOrEqualTo(root.<Integer>get("detail").get("year"), filter.getMaxYear()));
-        }
-
-        if (filter.getMetallic() != null){
-            predicates.add(cb.equal(root.<Boolean>get("body").get("isMetallic"), filter.getMetallic()));
-        }
-
-        if (filter.getCapacityId() != null) {
-            predicates.add(cb.equal(root.<Long>get("engine").get("capacity").get("id"), filter.getCapacityId()));
-        }
-
-        if (filter.getDamaged() != null){
-            predicates.add(cb.equal(root.<Boolean>get("detail").get("damaged"), filter.getDamaged()));
-        }
-
-        if (filter.getImmediately() != null){
-            predicates.add(cb.equal(root.<Boolean>get("detail").get("immediately"), filter.getImmediately()));
-        }
-
-        if (filter.getFuelTypeId() != null){
-            predicates.add(cb.equal(root.<Long>get("engine").get("fuelType").get("id"), filter.getFuelTypeId()));
-        }
-
-
-
-        if (filter.getGearTypeId() != null) {
-            predicates.add(cb.equal(root.<String>get("gear").get("gearType").get("id"), filter.getGearTypeId()));
-        }
-
         if (filter.getWithImage() != null && filter.getWithImage()) {
             predicates.add(cb.isNotNull(root.get("mainImage")));
         }
 
-        if (filter.getCustomCleared() != null) {
-            predicates.add(cb.equal(root.<Boolean>get("detail").get("customCleared"), filter.getCustomCleared()));
-        }
-
-        if (filter.getColorIds() != null){
-            predicates.add(root.<List<Long>>get("body").get("color").get("id").in(filter.getColorIds()));
-
-        }
         predicates.add(cb.equal(root.<Boolean>get("deleted"), false));
         criteriaQuery.orderBy(cb.desc(root.<Long>get("id")));
 
