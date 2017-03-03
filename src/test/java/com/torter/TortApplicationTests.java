@@ -11,6 +11,8 @@ public class TortApplicationTests {
 
 	@Test
 	public void contextLoads() {
+		
+		assertTrue(true);
 	}
 
 }
