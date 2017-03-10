@@ -1,4 +1,7 @@
 # Online Shop Portal
 
 [![Build Status](https://travis-ci.org/TorosyanV/shop.svg?branch=master)](https://travis-ci.org/TorosyanV/shop)
-[![Build Status](https://www.gnu.org/graphics/gplv3-88x31.png)
+
+EShop is Open Source software released under the  [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0.html).
+
+
