@@ -3,6 +3,7 @@ package com.shop.web.controller;
 import com.shop.data.entity.ProductEntity;
 import com.shop.service.dataservice.composition.CompositionService;
 import com.shop.service.dataservice.product.InvalidProductOwnerException;
+import com.shop.service.dataservice.product.ProductNotFoundException;
 import com.shop.service.dataservice.product.ProductService;
 import com.shop.service.dataservice.security.SecurityService;
 import com.shop.service.dataservice.user.UserService;
@@ -91,7 +92,7 @@ public class ProductController {
                 product = productService.getByIdAndUserId(productId, userId);
             }
             modelMap.addAttribute("equipments", compositionService.getAll());
-        } catch (InvalidProductOwnerException e) {
+        } catch (InvalidProductOwnerException | ProductNotFoundException e ) {
             logger.warn(e.getMessage(), e.getCause());
             return "redirect:/";
         }
@@ -118,10 +119,9 @@ public class ProductController {
             logger.info(String.format("Edit product success, productId: %s, userId: %s, userName:  %s", editDto.getProductId(), userId, principal.getName()));
             return "redirect:/detail/{id}";
         } catch (ImageStorageException e) {
-            e.printStackTrace();
             logger.error(e.getMessage(), e.getCause());
             return "ERROR";
-        } catch (InvalidProductOwnerException e) {
+        } catch (InvalidProductOwnerException | ProductNotFoundException e) {
             logger.info(e.getMessage(), e.getCause());
 
             return "redirect:/";
@@ -137,7 +137,7 @@ public class ProductController {
             productService.delete(productId, userId);
             return "redirect:/myoffers";
 
-        } catch (InvalidProductOwnerException e) {
+        } catch (InvalidProductOwnerException | ProductNotFoundException e) {
             logger.info(e.getMessage(), e.getCause());
             return "redirect:/";
         }
@@ -156,7 +156,7 @@ public class ProductController {
             modelMap.addAttribute("productId", product.getId());
             logger.info(String.format("Viewing analytic, productId: %s, userId: %s, userName:  %s", productId, userId, principal.getName()));
 
-        } catch (InvalidProductOwnerException e) {
+        } catch (InvalidProductOwnerException | ProductNotFoundException e) {
             logger.warn(String.format("Trying view analytic, productId: %s, userId: %s, userName:  %s", productId, userId, principal.getName()), e.getCause());
             return "redirect:/";
         }

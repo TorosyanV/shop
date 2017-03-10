@@ -88,7 +88,7 @@ public class UserController {
 
 
     // Login form with error
-    @RequestMapping("/login-error")
+    @GetMapping("/login-error")
     public String loginError(Model model) {
         model.addAttribute("loginModel", new LoginModel());
         model.addAttribute("loginError", true);

@@ -2,9 +2,9 @@ package com.shop.service.dataservice.product;
 
 import com.shop.data.entity.ProductPageViewEntity;
 import com.shop.data.repository.ProductPageViewRepository;
+import com.shop.service.analytic.dto.DayCountPair;
 import com.shop.service.dataservice.user.UserService;
 import com.shop.service.dto.product.ProductViewDto;
-import com.shop.web.viewmodel.PageViewItem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +47,7 @@ public class ProductPageViewServiceImpl implements ProductPageViewService {
     }
 
     @Override
-    public List<PageViewItem> getViewHistory(long productId) {
+    public List<DayCountPair> getViewHistory(long productId) {
 
 
         List<ProductPageViewEntity> allByProductId = productPageViewRepository.findAllByProductId(productId);
@@ -55,7 +55,10 @@ public class ProductPageViewServiceImpl implements ProductPageViewService {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 //        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
 
-        List<PageViewItem> viewHistory = allByProductId.stream().collect(Collectors.groupingBy(e -> df.format(e.getViewDate()), Collectors.counting())).entrySet().stream().map(x -> new PageViewItem(x.getKey(), x.getValue())).collect(Collectors.toList());
+        List<DayCountPair> viewHistory = allByProductId.stream()
+                .collect(Collectors.groupingBy(e -> df.format(e.getViewDate()),
+                        Collectors.counting())).entrySet().stream()
+                .map(x -> new DayCountPair(x.getKey(), x.getValue())).collect(Collectors.toList());
 
         return viewHistory;
     }

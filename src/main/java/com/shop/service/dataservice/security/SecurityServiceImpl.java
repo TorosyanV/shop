@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by vazgen on 12/20/16.
@@ -40,7 +41,7 @@ public class SecurityServiceImpl implements SecurityService {
     private TokenRepository tokenRepository;
 
     @Autowired
-    RandomGenerator randomGenerator;
+    private RandomGenerator randomGenerator;
 
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -64,6 +65,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public UserEntity getUserByResetToken(String token) throws InvalidTokenException {
         TokenEntity tokenEntity = tokenRepository.findByTokenTypeAndVal(TokenType.PASSWORD_RESET, token);
         if (tokenEntity == null)
@@ -74,6 +76,7 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
+    @Transactional
     public void changeUserPasswordByToken(String token, String password) throws InvalidTokenException {
         UserEntity userByResetToken = this.getUserByResetToken(token);
         userByResetToken.setPasswordHash(bCryptPasswordEncoder.encode(password));

@@ -37,8 +37,8 @@ public class DetailController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/detail/{id}")
-    public String getProductDetail(@PathVariable("id") Long productId, ModelMap model, Device device, Principal principal) throws ProductNotFoundException {
+    @GetMapping("/detail/{productId}")
+    public String getProductDetail(@PathVariable("productId") Long productId, ModelMap model, Device device, Principal principal) throws ProductNotFoundException {
 
 
         ProductWithDetailDto productWithDetailDto = null;

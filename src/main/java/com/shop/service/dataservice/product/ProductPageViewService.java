@@ -1,7 +1,7 @@
 package com.shop.service.dataservice.product;
 
+import com.shop.service.analytic.dto.DayCountPair;
 import com.shop.service.dto.product.ProductViewDto;
-import com.shop.web.viewmodel.PageViewItem;
 
 import java.util.List;
 
@@ -12,5 +12,5 @@ public interface ProductPageViewService {
 
     void addView(ProductViewDto viewDto);
 
-    List<PageViewItem> getViewHistory(long productId);
+    List<DayCountPair> getViewHistory(long productId);
 }

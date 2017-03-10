@@ -1,16 +1,13 @@
 package com.shop.web.api;
 
+import com.shop.service.analytic.dto.DayCountPair;
 import com.shop.service.dataservice.product.ProductNotFoundException;
 import com.shop.service.dataservice.product.ProductPageViewService;
 import com.shop.service.dataservice.product.ProductService;
 import com.shop.service.dataservice.user.UserService;
 import com.shop.service.dto.product.ProductWithDetailDto;
-import com.shop.web.viewmodel.PageViewItem;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 import java.util.List;
@@ -33,7 +30,7 @@ public class ProductDetailController {
 
 
 
-    @RequestMapping(value = "/product/{id}/json", method = RequestMethod.GET)
+    @GetMapping(value = "/product/{id}/json")
     public ProductWithDetailDto getDetail(@PathVariable("id") Long productId) {
 
         ProductWithDetailDto productWithDetailDto = null;
@@ -46,16 +43,16 @@ public class ProductDetailController {
     }
 
 
-    @RequestMapping(value = "/product/analytics/{id}", method = RequestMethod.GET)
-    public List<PageViewItem> getProductAnalyticData(@PathVariable("id") Long productId, Principal principal) {
+    @GetMapping(value = "/product/analytics/{id}")
+    public List<DayCountPair> getProductAnalyticData(@PathVariable("id") Long productId, Principal principal) {
 
-        boolean isOwner = productService.checkOwnerOfProduct(productId, userService.findByUsername(principal.getName()).getId());
+        boolean isOwner = productService.isOwnerOfProduct(productId, userService.findByUsername(principal.getName()).getId());
 
         if (!isOwner) {
             return null;
         }
 
-        List<PageViewItem> viewHistory = productPageViewService.getViewHistory(productId);
+        List<DayCountPair> viewHistory = productPageViewService.getViewHistory(productId);
 
         return viewHistory;
 

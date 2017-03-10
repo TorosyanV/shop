@@ -172,10 +172,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProductEntity getByIdAndUserId(Long id, Long userId) throws InvalidProductOwnerException {
-        ProductEntity productEntity = productRepository.findByIdAndUserIdAndDeletedIsFalse(id, userId);
-        if (productEntity == null)
+    public ProductEntity getByIdAndUserId(Long id, Long userId) throws InvalidProductOwnerException, ProductNotFoundException {
+        ProductEntity productEntity = productRepository.findByIdAndDeletedIsFalse(id);
+        if (productEntity == null){
+            throw new ProductNotFoundException(String.format("There is no product with id %s", id));
+        }
+        if (isOwnerOfProduct(productEntity, userId) ){
             throw new InvalidProductOwnerException(String.format("User with id %s can't edit product with id %s", userId, id));
+        }
 
         return productEntity;
     }
@@ -190,7 +194,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public void delete(Long productId, Long userId) throws InvalidProductOwnerException {
+    public void delete(Long productId, Long userId) throws InvalidProductOwnerException, ProductNotFoundException {
         ProductEntity productEntity = this.getByIdAndUserId(productId, userId);
 
         productEntity.setDeleted(true);
@@ -209,14 +213,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean checkOwnerOfProduct(Long productId, Long userId) {
+    public boolean isOwnerOfProduct(Long productId, Long userId) {
         ProductEntity productEntity = productRepository.findOne(productId);
-        return productEntity.getUser().getId() == userId;
+        return isOwnerOfProduct(productEntity, userId);
+    }
+
+    public boolean isOwnerOfProduct(ProductEntity product, Long userId) {
+        return product.getUser().getId() == userId;
     }
 
     @Override
     @Transactional
-    public void edit(ProductEditDto productEditDto, boolean isAdmin) throws ImageStorageException, InvalidProductOwnerException {
+    public void edit(ProductEditDto productEditDto, boolean isAdmin) throws ImageStorageException, InvalidProductOwnerException, ProductNotFoundException {
         ProductEntity productEntity = null;
         if (isAdmin) {
 

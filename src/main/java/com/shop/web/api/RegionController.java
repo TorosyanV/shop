@@ -5,10 +5,7 @@ import com.shop.service.dataservice.region.RegionService;
 import com.shop.service.dto.location.CitySimpleDto;
 import com.shop.service.dto.location.RegionSimpleDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,14 +21,14 @@ public class RegionController {
     private RegionService regionService;
     @Autowired
     private CityService cityService;
-    @RequestMapping( value = "/regions",method = RequestMethod.GET)
+    @GetMapping( value = "/regions")
     public List<RegionSimpleDto> getRegions() {
 
         List<RegionSimpleDto> regionSimpleDtos = regionService.getAll();
         return regionSimpleDtos;
     }
 
-    @RequestMapping(value = "regions/{id}/cities", method = RequestMethod.GET)
+    @GetMapping(value = "regions/{id}/cities")
     public List<CitySimpleDto> getCities(@PathVariable("id") Long regionId) {
 
         return cityService.getAllByRegionId(regionId);
