@@ -30,7 +30,7 @@ public class ProductCreateDto {
     private double price;
     private boolean customCleared;
 
-    private List<Long> equipments;
+    private List<Long> compositions;
 
     public long getMileage() {
         return mileage;
@@ -170,11 +170,11 @@ public class ProductCreateDto {
         this.sellerPhone = sellerPhone;
     }
 
-    public List<Long> getEquipments() {
-        return equipments;
+    public List<Long> getCompositions() {
+        return compositions;
     }
 
-    public void setEquipments(List<Long> equipments) {
-        this.equipments = equipments;
+    public void setCompositions(List<Long> compositions) {
+        this.compositions = compositions;
     }
 }

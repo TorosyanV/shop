@@ -1,16 +1,17 @@
-package com.shop.service.dto.product;
+package com.shop.web.viewmodel;
 
 import java.util.List;
 
 /**
- * Created by Vazgen on 05-Jan-17.
+ * Created by zhirayrg on 3/9/2017.
  */
-public class ProductEditDto extends ProductCreateDto {
+public class ProductForSellUpdateRequest {
 
     private Long productId;
 
-
     private List<Long> oldImages;
+
+    private String userMessage;
 
     public Long getProductId() {
         return productId;
@@ -26,5 +27,13 @@ public class ProductEditDto extends ProductCreateDto {
 
     public void setOldImages(List<Long> oldImages) {
         this.oldImages = oldImages;
+    }
+
+    public String getUserMessage() {
+        return userMessage;
+    }
+
+    public void setUserMessage(String userMessage) {
+        this.userMessage = userMessage;
     }
 }

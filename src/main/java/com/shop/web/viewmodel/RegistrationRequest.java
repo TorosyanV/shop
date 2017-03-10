@@ -1,11 +1,14 @@
-package com.shop.service.dto.user;
+package com.shop.web.viewmodel;
 
 /**
- * Created by vazgen on 12/20/16.
+ * Created by zhirayrg on 3/10/2017.
  */
-public class UserCreateDto {
+
+public class RegistrationRequest {
+
     private String userName;
     private String password;
+    private String confirmPassword;
     private String joinCode;
 
     public String getUserName() {
@@ -22,6 +25,14 @@ public class UserCreateDto {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
     }
 
     public String getJoinCode() {

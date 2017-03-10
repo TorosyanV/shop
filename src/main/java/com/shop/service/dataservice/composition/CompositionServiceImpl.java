@@ -21,13 +21,13 @@ public class CompositionServiceImpl implements CompositionService {
     @Autowired
     private Mapper mapper;
     @Autowired
-    private CompositionRepository equipmentRepository;
+    private CompositionRepository compositionRepository;
 
     @Override
     @Transactional(readOnly = true)
     public List<CompositionSimpleDto> getAll() {
 
-        List<CompositionEntity> equipmentEntities = equipmentRepository.findAll();
+        List<CompositionEntity> equipmentEntities = compositionRepository.findAll();
 
         List<CompositionSimpleDto> equipments = DozerExtension.map(mapper, equipmentEntities, CompositionSimpleDto.class);
         return equipments;

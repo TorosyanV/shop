@@ -18,12 +18,12 @@ public class ProductEntity {
 
 
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "car", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "product", cascade = CascadeType.ALL)
     private ProductDetailEntity detail;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "carEquipment", joinColumns = @JoinColumn(name = "carId"), inverseJoinColumns = @JoinColumn(name = "equipmentId"))
-    private List<CompositionEntity> equipments;
+    @JoinTable(name = "productComposition", joinColumns = @JoinColumn(name = "productId"), inverseJoinColumns = @JoinColumn(name = "compositionId"))
+    private List<CompositionEntity> compositions;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cityId", nullable = false)
@@ -34,7 +34,7 @@ public class ProductEntity {
     private UserEntity user;
 
 
-    @OneToMany(mappedBy = "car", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ImageEntity> images;
 
     @ManyToOne
@@ -62,8 +62,8 @@ public class ProductEntity {
         this.detail = detail;
     }
 
-    public void setEquipments(List<CompositionEntity> equipments) {
-        this.equipments = equipments;
+    public void setCompositions(List<CompositionEntity> compositions) {
+        this.compositions = compositions;
     }
 
 
@@ -92,8 +92,8 @@ public class ProductEntity {
         this.user = user;
     }
 
-    public List<CompositionEntity> getEquipments() {
-        return this.equipments;
+    public List<CompositionEntity> getCompositions() {
+        return this.compositions;
     }
 
     public List<ImageEntity> getImages() {

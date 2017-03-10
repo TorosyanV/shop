@@ -14,8 +14,8 @@ public class ImageEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "carId", nullable = false)
-    private ProductEntity car;
+    @JoinColumn(name = "productId", nullable = false)
+    private ProductEntity product;
 
     @Column(name = "imageName", nullable = false)
     private String imageName;
@@ -28,12 +28,12 @@ public class ImageEntity {
         this.id = id;
     }
 
-    public ProductEntity getCar() {
-        return car;
+    public ProductEntity getProduct() {
+        return product;
     }
 
-    public void setCar(ProductEntity car) {
-        this.car = car;
+    public void setProduct(ProductEntity product) {
+        this.product = product;
     }
 
     public String getImageName() {

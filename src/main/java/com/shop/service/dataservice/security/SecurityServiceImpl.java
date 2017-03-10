@@ -17,6 +17,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by vazgen on 12/20/16.
@@ -39,7 +41,10 @@ public class SecurityServiceImpl implements SecurityService {
     private TokenRepository tokenRepository;
 
     @Autowired
-    RandomGenerator randomGenerator;
+    private RandomGenerator randomGenerator;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
     @Override
@@ -57,6 +62,27 @@ public class SecurityServiceImpl implements SecurityService {
     public boolean hasRole(String role) {
         return SecurityContextHolder.getContext().getAuthentication().getAuthorities().contains(new SimpleGrantedAuthority(role));
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserEntity getUserByResetToken(String token) throws InvalidTokenException {
+        TokenEntity tokenEntity = tokenRepository.findByTokenTypeAndVal(TokenType.PASSWORD_RESET, token);
+        if (tokenEntity == null)
+            throw new InvalidTokenException("Reset Token not found");
+        UserEntity userEntity = tokenEntity.getUser();
+
+        return userEntity;
+    }
+
+    @Override
+    @Transactional
+    public void changeUserPasswordByToken(String token, String password) throws InvalidTokenException {
+        UserEntity userByResetToken = this.getUserByResetToken(token);
+        userByResetToken.setPasswordHash(bCryptPasswordEncoder.encode(password));
+        TokenEntity byTokenTypeAndVal = tokenRepository.findByTokenTypeAndVal(TokenType.PASSWORD_RESET, token);
+        tokenRepository.delete(byTokenTypeAndVal);
+        userRepository.save(userByResetToken);
     }
 
     @Override
@@ -106,4 +132,37 @@ public class SecurityServiceImpl implements SecurityService {
     public String generateActivationToken(long userId) {
         return generateToken(TokenType.ACTIVATION, userId);
     }
+
+    @Override
+    public String generateResetToken(long userId) {
+        return generateToken(TokenType.PASSWORD_RESET, userId);
+    }
+
+//    public boolean facebookLogin(String facebookId, String token) {
+//
+//        boolean isAuthenticated = false;
+//
+//
+//        try {
+//            UserDetails userDetails = userDetailsService.loadByFacebookId(facebookId, token);
+//            UsernamePasswordAuthenticationToken usernameTokenAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+//
+////            authenticationManager.authenticate(usernameTokenAuthenticationToken);
+//            if (usernameTokenAuthenticationToken.isAuthenticated()) {
+//                SecurityContextHolder.getContext().setAuthentication(usernameTokenAuthenticationToken);
+//                logger.debug(String.format("Auto login successfully for fbId %s!", facebookId));
+//                isAuthenticated = true;
+//            }
+//
+//        } catch (InvalidFacebookTokenException e) {
+//
+//            isAuthenticated = false;
+//        }
+//
+//
+//        return isAuthenticated;
+//
+//    }
+
+
 }

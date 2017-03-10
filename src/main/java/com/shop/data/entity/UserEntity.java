@@ -35,7 +35,14 @@ public class UserEntity {
     @Column(nullable = false)
     private Date created;
 
+    @Column
     private Date updated;
+
+    @Column(name = "joinCode", length = 50)
+    private String joinCode;
+
+    @Column(name = "userCode", length = 50, unique = true)
+    private String userCode;
 
     @PrePersist
     protected void onCreate() {
@@ -56,10 +63,19 @@ public class UserEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @Where(clause = "deleted = 0")
-    private Set<ProductEntity> cars;
+    private Set<ProductEntity> products;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private Set<TokenEntity> tokens;
+
+    @Column(name = "facebookEmail", length = 50)
+    private String facebookEmail;
+
+    @Column(name = "facebookName")
+    private String facebookName;
+
+    @Column(name = "facebookUser", nullable = false)
+    private boolean facebookUser;
 
 
     public Long getId() {
@@ -142,12 +158,52 @@ public class UserEntity {
         this.city = city;
     }
 
-    public Set<ProductEntity> getCars() {
-        return cars;
+    public Set<ProductEntity> getProducts() {
+        return products;
     }
 
-    public void setCars(Set<ProductEntity> cars) {
-        this.cars = cars;
+    public void setProducts(Set<ProductEntity> products) {
+        this.products = products;
+    }
+
+    public String getJoinCode() {
+        return joinCode;
+    }
+
+    public void setJoinCode(String joinCode) {
+        this.joinCode = joinCode;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
+    }
+
+    public String getFacebookEmail() {
+        return facebookEmail;
+    }
+
+    public void setFacebookEmail(String facebookEmail) {
+        this.facebookEmail = facebookEmail;
+    }
+
+    public String getFacebookName() {
+        return facebookName;
+    }
+
+    public void setFacebookName(String facebookName) {
+        this.facebookName = facebookName;
+    }
+
+    public boolean isFacebookUser() {
+        return facebookUser;
+    }
+
+    public void setFacebookUser(boolean facebookUser) {
+        this.facebookUser = facebookUser;
     }
 }
 

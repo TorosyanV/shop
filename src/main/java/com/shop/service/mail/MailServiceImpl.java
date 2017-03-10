@@ -48,6 +48,7 @@ public class MailServiceImpl implements MailService {
 
 
     private String verificationSubject="shop հատսատման նամակ";
+    private String resetPasswordSubject="shop Գաղտնաբառի վերականգնում";
 
     @Value("${shop.root.domain}")
     private String rootDomain;
@@ -90,6 +91,26 @@ public class MailServiceImpl implements MailService {
         String verificationLink = String.format("%s/activate/%s", rootDomain, token);
         htmlMessage = htmlMessage.replace("@verificationLink", verificationLink);
         sendMail(verificationMail, toEmail, verificationSubject, htmlMessage);
+
+    }
+
+    @Override
+    public void sendPasswordResetEmail(Long userId, String token) throws EmailException {
+
+        String htmlMessage = "";
+        try {
+            final Charset UTF8_CHARSET = Charset.forName("UTF-8");
+            htmlMessage = new String(Files.readAllBytes(Paths.get(getClass().getResource("/mailtemplate/resetPassword.html").toURI())), UTF8_CHARSET);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        String toEmail = userService.getById(userId).getUserName();
+        String verificationLink = String.format("%s/reset/%s", rootDomain, token);
+        htmlMessage = htmlMessage.replace("@resetLink", verificationLink);
+        //Todo verificationMail change
+        sendMail(verificationMail, toEmail, resetPasswordSubject, htmlMessage);
 
     }
 

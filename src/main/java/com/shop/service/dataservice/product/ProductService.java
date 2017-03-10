@@ -15,21 +15,23 @@ import java.util.List;
  */
 public interface ProductService {
 
-    long add(ProductCreateDto car) throws ImageStorageException;
+    long add(ProductCreateDto product) throws ImageStorageException;
 
-    void edit(ProductEditDto editDto, boolean isAdmin) throws ImageStorageException, InvalidProductOwnerException;
+    void edit(ProductEditDto editDto, boolean isAdmin) throws ImageStorageException, InvalidProductOwnerException, ProductNotFoundException;
 
-    ProductWithDetailDto getCarWithDetail(long id) throws ProductNotFoundException;
+    ProductWithDetailDto getProductWithDetail(long id) throws ProductNotFoundException;
 
     List<ProductEntity> getAllByUserId(Long userId);
 
-    ProductEntity getByIdAndUserId(Long id, Long userId) throws InvalidProductOwnerException;
+    ProductEntity getByIdAndUserId(Long id, Long userId) throws InvalidProductOwnerException, ProductNotFoundException;
     ProductEntity getById(Long id);
 
 
-    void delete(Long carId, Long userId) throws InvalidProductOwnerException;
+    void delete(Long productId, Long userId) throws InvalidProductOwnerException, ProductNotFoundException;
 
     Long getCountByOwnerRole(String role);
 
     long getAllCount();
+
+    boolean isOwnerOfProduct(Long productId, Long userId);
 }
