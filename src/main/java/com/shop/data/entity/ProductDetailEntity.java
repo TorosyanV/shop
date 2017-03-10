@@ -30,18 +30,6 @@ public class ProductDetailEntity {
     @PrimaryKeyJoinColumn
     private ProductEntity product;
 
-    @Column(name = "mileage",nullable = false)
-    private long mileage;
-
-    @Column(name = "damaged", nullable = false)
-    private boolean damaged;
-
-    @Column(name = "customCleared", nullable = false)
-    private boolean customCleared;
-
-    @Column(name = "year", nullable = false)
-    private int year;
-
     @Column(name = "userMessage",nullable = true)
     private String userMessage;
 
@@ -70,38 +58,6 @@ public class ProductDetailEntity {
 
     public void setProduct(ProductEntity product) {
         this.product = product;
-    }
-
-    public long getMileage() {
-        return mileage;
-    }
-
-    public void setMileage(long mileage) {
-        this.mileage = mileage;
-    }
-
-    public boolean isDamaged() {
-        return damaged;
-    }
-
-    public void setDamaged(boolean damaged) {
-        this.damaged = damaged;
-    }
-
-    public boolean isCustomCleared() {
-        return customCleared;
-    }
-
-    public void setCustomCleared(boolean customCleared) {
-        this.customCleared = customCleared;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
     }
 
     public String getUserMessage() {

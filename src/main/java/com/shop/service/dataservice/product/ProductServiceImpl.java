@@ -88,7 +88,6 @@ public class ProductServiceImpl implements ProductService {
 
         ProductDetailEntity detailEntity = new ProductDetailEntity();
         detailEntity.setProduct(productEntity);
-        detailEntity.setCustomCleared(productCreateDto.isCustomCleared());
 
         if (productCreateDto.getUserMessage() != null) {
             if (productCreateDto.getUserMessage().toLowerCase().contains("shtap") || productCreateDto.getUserMessage().toLowerCase().contains("շտապ")) {
@@ -96,9 +95,6 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        detailEntity.setDamaged(false);
-        detailEntity.setMileage(productCreateDto.getMileage());
-        detailEntity.setYear(productCreateDto.getYear());
         detailEntity.setUserMessage(productCreateDto.getUserMessage());
         detailEntity.setPrice(productCreateDto.getPrice());
         detailEntity.setSellerPhone(productCreateDto.getSellerPhone());
@@ -249,9 +245,6 @@ public class ProductServiceImpl implements ProductService {
 
 
         ProductDetailEntity detailEntity = productEntity.getDetail();
-//        detailEntity.setProduct(productEntity);
-        detailEntity.setCustomCleared(productEditDto.isCustomCleared());
-        detailEntity.setDamaged(false);
 
         if (productEditDto.getUserMessage() != null) {
             if (productEditDto.getUserMessage().toLowerCase().contains("shtap") || productEditDto.getUserMessage().toLowerCase().contains("շտապ")) {
@@ -259,8 +252,6 @@ public class ProductServiceImpl implements ProductService {
             }
         }
 
-        detailEntity.setMileage(productEditDto.getMileage());
-        detailEntity.setYear(productEditDto.getYear());
         detailEntity.setUserMessage(productEditDto.getUserMessage());
         detailEntity.setPrice(productEditDto.getPrice());
         detailEntity.setPrice(productEditDto.getPrice());
