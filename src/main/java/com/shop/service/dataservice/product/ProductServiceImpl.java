@@ -43,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private Mapper mapper;
     @Autowired
-    private ProductRepository carRepository;
+    private ProductRepository productRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -51,12 +51,11 @@ public class ProductServiceImpl implements ProductService {
     private CityRepository cityRepository;
 
 
+    @Autowired
+    private CompositionRepository compositionRepository;
 
     @Autowired
-    private CompositionRepository equipmentRepository;
-
-    @Autowired
-    private ProductDetailRepository carDetailRepository;
+    private ProductDetailRepository productDetailRepository;
 
     @Autowired
     private ImageRepository imageRepository;
@@ -64,10 +63,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional
-    public long add(ProductCreateDto carCreateDto) throws ImageStorageException {
+    public long add(ProductCreateDto productCreateDto) throws ImageStorageException {
 
         List<String> imageNames = new ArrayList<>();
-        for (MultipartFile file : carCreateDto.getImages()) {
+        for (MultipartFile file : productCreateDto.getImages()) {
             if (file.isEmpty())
                 continue;
 
@@ -82,88 +81,88 @@ public class ProductServiceImpl implements ProductService {
             imageNames.add(name);
         }
 
-        UserEntity userEntity = userRepository.findOne(carCreateDto.getUser());
-        CityEntity cityEntity = cityRepository.findOne(carCreateDto.getCity());
+        UserEntity userEntity = userRepository.findOne(productCreateDto.getUser());
+        CityEntity cityEntity = cityRepository.findOne(productCreateDto.getCity());
 
-        ProductEntity carEntity = new ProductEntity();
+        ProductEntity productEntity = new ProductEntity();
 
         ProductDetailEntity detailEntity = new ProductDetailEntity();
-        detailEntity.setCar(carEntity);
-        detailEntity.setCustomCleared(carCreateDto.isCustomCleared());
+        detailEntity.setProduct(productEntity);
+        detailEntity.setCustomCleared(productCreateDto.isCustomCleared());
 
-        if (carCreateDto.getUserMessage() != null) {
-            if (carCreateDto.getUserMessage().toLowerCase().contains("shtap") || carCreateDto.getUserMessage().toLowerCase().contains("շտապ")) {
+        if (productCreateDto.getUserMessage() != null) {
+            if (productCreateDto.getUserMessage().toLowerCase().contains("shtap") || productCreateDto.getUserMessage().toLowerCase().contains("շտապ")) {
                 detailEntity.setImmediately(true);
             }
         }
 
         detailEntity.setDamaged(false);
-        detailEntity.setMileage(carCreateDto.getMileage());
-        detailEntity.setYear(carCreateDto.getYear());
-        detailEntity.setUserMessage(carCreateDto.getUserMessage());
-        detailEntity.setPrice(carCreateDto.getPrice());
-        detailEntity.setSellerPhone(carCreateDto.getSellerPhone());
+        detailEntity.setMileage(productCreateDto.getMileage());
+        detailEntity.setYear(productCreateDto.getYear());
+        detailEntity.setUserMessage(productCreateDto.getUserMessage());
+        detailEntity.setPrice(productCreateDto.getPrice());
+        detailEntity.setSellerPhone(productCreateDto.getSellerPhone());
 
 //Only for now
         detailEntity.setImmediately(false);
 
-    ;
+
 
 
         List<ImageEntity> imageEntities = new ArrayList<>();
         for (String imageName : imageNames) {
             ImageEntity imageEntity = new ImageEntity();
-            imageEntity.setCar(carEntity);
+            imageEntity.setProduct(productEntity);
             imageEntity.setImageName(imageName);
             imageEntities.add(imageEntity);
         }
-        carEntity.setImages(imageEntities);
+        productEntity.setImages(imageEntities);
         if (imageEntities.size() != 0) {
-            carEntity.setMainImage(imageEntities.stream().findFirst().get());
+            productEntity.setMainImage(imageEntities.stream().findFirst().get());
         }
 
-        carEntity.setUser(userEntity);
-        carEntity.setCity(cityEntity);
-        carEntity.setDetail(detailEntity);
-        List<CompositionEntity> equipmentEntityList = equipmentRepository.findAll(carCreateDto.getEquipments());
-        carEntity.setEquipments(equipmentEntityList);
-        carRepository.save(carEntity);
-        return carEntity.getId();
+        productEntity.setUser(userEntity);
+        productEntity.setCity(cityEntity);
+        productEntity.setDetail(detailEntity);
+        List<CompositionEntity> equipmentEntityList = compositionRepository.findAll(productCreateDto.getCompositions());
+        productEntity.setCompositions(equipmentEntityList);
+        productRepository.save(productEntity);
+        return productEntity.getId();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public ProductWithDetailDto getCarWithDetail(long id) throws ProductNotFoundException {
-        ProductEntity carEntity = carRepository.findOne(id);
+    public ProductWithDetailDto getProductWithDetail(long id) throws ProductNotFoundException {
+        ProductEntity productEntity = productRepository.findOne(id);
 
-        if (carEntity == null || carEntity.isDeleted())
-            throw new ProductNotFoundException(String.format("Car not exists with id %s", id));
+        if (productEntity == null || productEntity.isDeleted())
+            throw new ProductNotFoundException(String.format("Product not exists with id %s", id));
 
-        ProductWithDetailDto carWithDetail = new ProductWithDetailDto();
+        ProductWithDetailDto productWithDetailDto = new ProductWithDetailDto();
 
-        ProductDetailDto carDetail = mapper.map(carEntity.getDetail(), ProductDetailDto.class);
-        RegionSimpleDto regionSimpleDto = mapper.map(carEntity.getCity().getRegion(), RegionSimpleDto.class);
-        CitySimpleDto citySimpleDto = mapper.map(carEntity.getCity(), CitySimpleDto.class);
+        ProductDetailDto productDetail = mapper.map(productEntity.getDetail(), ProductDetailDto.class);
+        RegionSimpleDto regionSimpleDto = mapper.map(productEntity.getCity().getRegion(), RegionSimpleDto.class);
+        CitySimpleDto citySimpleDto = mapper.map(productEntity.getCity(), CitySimpleDto.class);
         ImageUrl mainImage = null;
-        if (carEntity.getMainImage() != null) {
-            mainImage = mapper.map(carEntity.getMainImage(), ImageSimpleDto.class);
+        if (productEntity.getMainImage() != null) {
+            mainImage = mapper.map(productEntity.getMainImage(), ImageSimpleDto.class);
         } else {
             mainImage = new ImageDefaultSimpleDto();
         }
 
-        List<ImageSimpleDto> imageSimpleDtos = DozerExtension.map(mapper, carEntity.getImages(), ImageSimpleDto.class);
-        List<CompositionSimpleDto> equipmentSimpleDtos = DozerExtension.map(mapper, carEntity.getEquipments(), CompositionSimpleDto.class);
+        List<ImageSimpleDto> imageSimpleDtos = DozerExtension.map(mapper, productEntity.getImages(), ImageSimpleDto.class);
+        List<CompositionSimpleDto> equipmentSimpleDtos = DozerExtension.map(mapper, productEntity.getCompositions(), CompositionSimpleDto.class);
 
 
-        carWithDetail.setCarId(carEntity.getId());
-        carWithDetail.setDetail(carDetail);
-        carWithDetail.setRegion(regionSimpleDto);
-        carWithDetail.setCity(citySimpleDto);
-        carWithDetail.setEquipments(equipmentSimpleDtos);
+        productWithDetailDto.setProductId(productEntity.getId());
+        productWithDetailDto.setDetail(productDetail);
+        productWithDetailDto.setRegion(regionSimpleDto);
+        productWithDetailDto.setCity(citySimpleDto);
+        productWithDetailDto.setCompositions(equipmentSimpleDtos);
 
-        carWithDetail.setImages(imageSimpleDtos);
-        carWithDetail.setMainImage(mainImage);
-        return carWithDetail;
+        productWithDetailDto.setImages(imageSimpleDtos);
+        productWithDetailDto.setMainImage(mainImage);
+        return productWithDetailDto;
     }
 
     @Override
@@ -172,59 +171,66 @@ public class ProductServiceImpl implements ProductService {
 
         //TODO
         Pageable limit = new PageRequest(0, 100);
-        return carRepository.findAllByUserIdAndDeletedIsFalse(userId, limit);
+        return productRepository.findAllByUserIdAndDeletedIsFalse(userId, limit);
     }
 
     @Override
     @Transactional(readOnly = true)
     public ProductEntity getByIdAndUserId(Long id, Long userId) throws InvalidProductOwnerException {
-        ProductEntity carEntity = carRepository.findByIdAndUserIdAndDeletedIsFalse(id, userId);
-        if (carEntity == null)
-            throw new InvalidProductOwnerException(String.format("User with id %s can't edit car with id %s", userId, id));
+        ProductEntity productEntity = productRepository.findByIdAndUserIdAndDeletedIsFalse(id, userId);
+        if (productEntity == null)
+            throw new InvalidProductOwnerException(String.format("User with id %s can't edit product with id %s", userId, id));
 
-        return carEntity;
+        return productEntity;
     }
 
 
     @Override
     @Transactional(readOnly = true)
     public ProductEntity getById(Long id) {
-        return carRepository.findByIdAndDeletedIsFalse(id);
+        return productRepository.findByIdAndDeletedIsFalse(id);
 
     }
 
     @Override
     @Transactional
-    public void delete(Long carId, Long userId) throws InvalidProductOwnerException {
-        ProductEntity carEntity = this.getByIdAndUserId(carId, userId);
+    public void delete(Long productId, Long userId) throws InvalidProductOwnerException {
+        ProductEntity productEntity = this.getByIdAndUserId(productId, userId);
 
-        carEntity.setDeleted(true);
-        carRepository.save(carEntity);
+        productEntity.setDeleted(true);
+        productRepository.save(productEntity);
     }
 
     @Override
     public Long getCountByOwnerRole(String role) {
-        return carRepository.countByUserRolesName(role);
+        return productRepository.countByUserRolesName(role);
     }
 
     @Override
     public long getAllCount() {
-        return carRepository.count();
+        return productRepository.count();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean checkOwnerOfProduct(Long productId, Long userId) {
+        ProductEntity productEntity = productRepository.findOne(productId);
+        return productEntity.getUser().getId() == userId;
     }
 
     @Override
     @Transactional
-    public void edit(ProductEditDto carEditDto, boolean isAdmin) throws ImageStorageException, InvalidProductOwnerException {
-        ProductEntity carEntity = null;
+    public void edit(ProductEditDto productEditDto, boolean isAdmin) throws ImageStorageException, InvalidProductOwnerException {
+        ProductEntity productEntity = null;
         if (isAdmin) {
 
-            carEntity = getById(carEditDto.getCarId());
+            productEntity = getById(productEditDto.getProductId());
         } else {
-            carEntity = getByIdAndUserId(carEditDto.getCarId(), carEditDto.getUser());
+            productEntity = getByIdAndUserId(productEditDto.getProductId(), productEditDto.getUser());
         }
 
         List<String> upladedImageNames = new ArrayList<>();
-        for (MultipartFile file : carEditDto.getImages()) {
+        for (MultipartFile file : productEditDto.getImages()) {
             if (file.isEmpty())
                 continue;
 
@@ -239,26 +245,26 @@ public class ProductServiceImpl implements ProductService {
             upladedImageNames.add(name);
         }
 
-        CityEntity cityEntity = cityRepository.findOne(carEditDto.getCity());
+        CityEntity cityEntity = cityRepository.findOne(productEditDto.getCity());
 
 
-        ProductDetailEntity detailEntity = carEntity.getDetail();
-//        detailEntity.setCar(carEntity);
-        detailEntity.setCustomCleared(carEditDto.isCustomCleared());
+        ProductDetailEntity detailEntity = productEntity.getDetail();
+//        detailEntity.setProduct(productEntity);
+        detailEntity.setCustomCleared(productEditDto.isCustomCleared());
         detailEntity.setDamaged(false);
 
-        if (carEditDto.getUserMessage() != null) {
-            if (carEditDto.getUserMessage().toLowerCase().contains("shtap") || carEditDto.getUserMessage().toLowerCase().contains("շտապ")) {
+        if (productEditDto.getUserMessage() != null) {
+            if (productEditDto.getUserMessage().toLowerCase().contains("shtap") || productEditDto.getUserMessage().toLowerCase().contains("շտապ")) {
                 detailEntity.setImmediately(true);
             }
         }
 
-        detailEntity.setMileage(carEditDto.getMileage());
-        detailEntity.setYear(carEditDto.getYear());
-        detailEntity.setUserMessage(carEditDto.getUserMessage());
-        detailEntity.setPrice(carEditDto.getPrice());
-        detailEntity.setPrice(carEditDto.getPrice());
-        detailEntity.setSellerPhone(carEditDto.getSellerPhone());
+        detailEntity.setMileage(productEditDto.getMileage());
+        detailEntity.setYear(productEditDto.getYear());
+        detailEntity.setUserMessage(productEditDto.getUserMessage());
+        detailEntity.setPrice(productEditDto.getPrice());
+        detailEntity.setPrice(productEditDto.getPrice());
+        detailEntity.setSellerPhone(productEditDto.getSellerPhone());
 
 
 
@@ -268,24 +274,24 @@ public class ProductServiceImpl implements ProductService {
         List<ImageEntity> newAddedImages = new ArrayList<>();
         for (String imageName : upladedImageNames) {
             ImageEntity imageEntity = new ImageEntity();
-            imageEntity.setCar(carEntity);
+            imageEntity.setProduct(productEntity);
             imageEntity.setImageName(imageName);
             newAddedImages.add(imageEntity);
         }
 
-        List<ImageEntity> oldImages = imageRepository.findAll(carEditDto.getOldImages());
+        List<ImageEntity> oldImages = imageRepository.findAll(productEditDto.getOldImages());
         List<ImageEntity> allImages = new ArrayList<>();
         allImages.addAll(oldImages);
         allImages.addAll(newAddedImages);
 
 
-        List<ImageEntity> imagesToDelete = carEntity.getImages().stream().filter(imageEntity -> carEditDto.getOldImages() == null || !carEditDto.getOldImages().contains(imageEntity.getId())).collect(Collectors.toList());
-        carEntity.setImages(allImages);
+        List<ImageEntity> imagesToDelete = productEntity.getImages().stream().filter(imageEntity -> productEditDto.getOldImages() == null || !productEditDto.getOldImages().contains(imageEntity.getId())).collect(Collectors.toList());
+        productEntity.setImages(allImages);
 
         if (allImages.size() == 0) {
-            carEntity.setMainImage(null);
+            productEntity.setMainImage(null);
         } else {
-            carEntity.setMainImage(allImages.get(0));
+            productEntity.setMainImage(allImages.get(0));
 
         }
 
@@ -293,11 +299,11 @@ public class ProductServiceImpl implements ProductService {
         imageRepository.save(allImages);
 
 
-        carEntity.setCity(cityEntity);
-        carEntity.setDetail(detailEntity);
-        List<CompositionEntity> equipmentEntityList = equipmentRepository.findAll(carEditDto.getEquipments());
-        carEntity.setEquipments(equipmentEntityList);
-        carRepository.save(carEntity);
+        productEntity.setCity(cityEntity);
+        productEntity.setDetail(detailEntity);
+        List<CompositionEntity> compositionEntityList = compositionRepository.findAll(productEditDto.getCompositions());
+        productEntity.setCompositions(compositionEntityList);
+        productRepository.save(productEntity);
 
     }
 

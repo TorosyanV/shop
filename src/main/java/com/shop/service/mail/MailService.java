@@ -8,4 +8,6 @@ import org.apache.commons.mail.EmailException;
 public interface MailService {
 
     void sendVerificationEmail(Long userId, String token) throws EmailException;
+    void sendPasswordResetEmail(Long userId, String token) throws EmailException;
+
 }

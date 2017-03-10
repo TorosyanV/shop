@@ -55,6 +55,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<UserEntity> getAllByJoinCode(String joinCode) {
+
+        return userRepository.findAllByJoinCodeAndJoinCodeNotNullOrderByIdDesc(joinCode);
+    }
+
+    @Override
     public Long getInactiveUserCount() {
         return userRepository.countByActive(false);
     }

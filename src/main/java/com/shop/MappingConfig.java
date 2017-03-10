@@ -14,7 +14,7 @@ import java.io.IOException;
 
 
 @Configuration
-@ComponentScan(basePackages={"com.carshop"})
+@ComponentScan(basePackages={"com.shop"})
 public class MappingConfig {
 
     @Bean(name = "dozerBean")

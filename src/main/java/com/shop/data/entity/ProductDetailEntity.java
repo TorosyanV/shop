@@ -14,11 +14,11 @@ import java.util.Date;
 public class ProductDetailEntity {
 
 
-    @GenericGenerator(name = "cardetail_carid", strategy = "foreign", parameters = @Parameter(name = "property", value = "car"))
+    @GenericGenerator(name = "productdetail_productid", strategy = "foreign", parameters = @Parameter(name = "property", value = "product"))
     @Id
-    @GeneratedValue(generator = "cardetail_carid")
-    @Column(name = "car_id", unique = true, nullable = false)
-    private Long carId;
+    @GeneratedValue(generator = "productdetail_productid")
+    @Column(name = "product_id", unique = true, nullable = false)
+    private Long productId;
 
     @Column(nullable = false)
     private Date created;
@@ -28,7 +28,7 @@ public class ProductDetailEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @PrimaryKeyJoinColumn
-    private ProductEntity car;
+    private ProductEntity product;
 
     @Column(name = "mileage",nullable = false)
     private long mileage;
@@ -56,20 +56,20 @@ public class ProductDetailEntity {
     private boolean immediately;
 
 
-    public long getCarId() {
-        return carId;
+    public long getProductId() {
+        return productId;
     }
 
-    public void setCarId(long carId) {
-        this.carId = carId;
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
 
-    public ProductEntity getCar() {
-        return car;
+    public ProductEntity getProduct() {
+        return product;
     }
 
-    public void setCar(ProductEntity car) {
-        this.car = car;
+    public void setProduct(ProductEntity product) {
+        this.product = product;
     }
 
     public long getMileage() {

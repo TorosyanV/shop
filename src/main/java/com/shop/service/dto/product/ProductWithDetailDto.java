@@ -1,6 +1,7 @@
 package com.shop.service.dto.product;
 
 
+import com.shop.service.ProductDescription;
 import com.shop.service.dto.ImageSimpleDto;
 import com.shop.service.dto.location.RegionSimpleDto;
 import com.shop.service.dto.CompositionSimpleDto;
@@ -12,30 +13,25 @@ import java.util.List;
 /**
  * Created by Vazgen on 08/25/2016.
  */
-public class ProductWithDetailDto {
+public class ProductWithDetailDto implements ProductDescription {
 
 
-    private  long carId;
+    private  long productId;
     private List<ImageSimpleDto> images;
     private ImageUrl mainImage;
     private ProductDetailDto detail;
     private RegionSimpleDto region;
     private CitySimpleDto city;
 
-    private List<CompositionSimpleDto> equipments;
+    private List<CompositionSimpleDto> compositions;
 
-    public long getCarId() {
-        return carId;
+    public long getProductId() {
+        return productId;
     }
 
-    public void setCarId(long carId) {
-        this.carId = carId;
+    public void setProductId(long productId) {
+        this.productId = productId;
     }
-
-
-
-
-
 
 
 
@@ -74,12 +70,12 @@ public class ProductWithDetailDto {
         this.images = images;
     }
 
-    public List<CompositionSimpleDto> getEquipments() {
-        return equipments;
+    public List<CompositionSimpleDto> getCompositions() {
+        return compositions;
     }
 
-    public void setEquipments(List<CompositionSimpleDto> equipments) {
-        this.equipments = equipments;
+    public void setCompositions(List<CompositionSimpleDto> compositions) {
+        this.compositions = compositions;
     }
 
 
@@ -92,5 +88,8 @@ public class ProductWithDetailDto {
     }
 
 
-
+    @Override
+    public String getDescription() {
+        return String.format("User Message about this product is %s", getDetail().getUserMessage());
+    }
 }
