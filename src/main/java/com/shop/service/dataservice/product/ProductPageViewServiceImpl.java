@@ -6,6 +6,7 @@ import com.shop.service.dataservice.user.UserService;
 import com.shop.service.dto.product.ProductViewDto;
 import com.shop.web.viewmodel.PageViewItem;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.text.DateFormat;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 /**
  * Created by zhirayrg on 3/10/2017.
  */
+@Service
 public class ProductPageViewServiceImpl implements ProductPageViewService {
 
     @Autowired

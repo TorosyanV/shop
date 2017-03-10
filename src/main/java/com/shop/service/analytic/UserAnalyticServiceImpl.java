@@ -4,6 +4,7 @@ import com.shop.data.entity.UserEntity;
 import com.shop.data.repository.UserRepository;
 import com.shop.service.analytic.dto.DayCountPair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Created by zhirayrg on 3/10/2017.
  */
+@Service
 public class UserAnalyticServiceImpl implements UserAnalyticService {
 
     @Autowired
