@@ -30,6 +30,7 @@ import java.security.Principal;
 
 @Controller
 public class ProductController {
+
     private static final Logger logger = Logger.getLogger(ProductController.class.getName());
 
     @Autowired
